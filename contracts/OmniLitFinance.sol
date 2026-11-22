@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-contract AetherMindProtocol {
+contract OmniLitFinance {
     uint256 public constant RATE_NUM = 85; // 1 zkLTC = 85 aUSD
     uint256 public constant LTV_BPS = 6500; // 65% Max LTV
     uint256 public constant APY_BPS = 1920; // 19.20% APY

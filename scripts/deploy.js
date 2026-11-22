@@ -5,13 +5,13 @@ const path = require("path");
 require("dotenv").config();
 
 function compileContract() {
-  const contractPath = path.join(__dirname, "..", "contracts", "AetherMindProtocol.sol");
+  const contractPath = path.join(__dirname, "..", "contracts", "OmniLitFinance.sol");
   const source = fs.readFileSync(contractPath, "utf8");
 
   const input = {
     language: "Solidity",
     sources: {
-      "AetherMindProtocol.sol": { content: source }
+      "OmniLitFinance.sol": { content: source }
     },
     settings: {
       optimizer: { enabled: true, runs: 200 },
@@ -31,7 +31,7 @@ function compileContract() {
     }
   }
 
-  const contractOutput = compiled.contracts["AetherMindProtocol.sol"]["AetherMindProtocol"];
+  const contractOutput = compiled.contracts["OmniLitFinance.sol"]["OmniLitFinance"];
   return {
     abi: contractOutput.abi,
     bytecode: "0x" + contractOutput.evm.bytecode.object
@@ -46,7 +46,7 @@ async function main() {
 
   const provider = new ethers.JsonRpcProvider("https://rpc.testnet.liteforge.zeeve.net/");
   const wallet = new ethers.Wallet(pk, provider);
-  console.log("Deploying AetherMindProtocol with:", wallet.address);
+  console.log("Deploying OmniLitFinance with:", wallet.address);
 
   const { abi, bytecode } = compileContract();
   const factory = new ethers.ContractFactory(abi, bytecode, wallet);
@@ -54,7 +54,7 @@ async function main() {
   await contract.waitForDeployment();
 
   const addr = await contract.getAddress();
-  console.log("AetherMindProtocol deployed at:", addr);
+  console.log("OmniLitFinance deployed at:", addr);
 
   const htmlPath = path.join(__dirname, "..", "public", "index.html");
   let html = fs.readFileSync(htmlPath, "utf8");
