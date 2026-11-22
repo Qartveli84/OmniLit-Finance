@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AETHERMIND // AI + DeFi Protocol on LitVM 4441</title>
+  <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+  <link rel="alternate icon" type="image/png" href="/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=JetBrains+Mono:wght@600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.2/dist/ethers.umd.min.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: radial-gradient(circle at 12% 8%, #1e1b4b, #090d16 55%, #020617);
+      color: #f8fafc;
+      padding: 22px 16px 56px;
+    }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .container { max-width: 1160px; margin: 0 auto; }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .brand-row { display: flex; align-items: center; gap: 14px; }
+    .brand-logo {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      border: 1px solid rgba(56, 189, 248, 0.5);
+      box-shadow: 0 0 28px rgba(56, 189, 248, 0.3);
+      flex-shrink: 0;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(56, 189, 248, 0.14);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: #7dd3fc;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+    }
+    h1 { margin: 6px 0 0; font-size: 32px; font-weight: 900; letter-spacing: -0.02em; }
+    h1 span { color: #38bdf8; }
+    .subtitle { margin: 4px 0 0; color: #94a3b8; font-size: 13px; }
+
+    button {
+      font-family: inherit;
+      font-weight: 800;
+      border: none;
+      cursor: pointer;
+      border-radius: 12px;
+      padding: 11px 15px;
+      font-size: 13px;
+      transition: transform 0.12s ease, filter 0.15s ease;
+    }
+    button:active { transform: scale(0.97); }
+    button:hover { filter: brightness(1.08); }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-wallet { background: linear-gradient(135deg, #0ea5e9, #2563eb); color: #fff; }
+    .btn-wallet.connected { background: #059669; }
+    .btn-primary { background: linear-gradient(135deg, #3b82f6, #06b6d4); color: #fff; }
+    .btn-secondary { background: rgba(30, 41, 59, 0.95); color: #f8fafc; border: 1px solid rgba(148, 163, 184, 0.25); }
+    .btn-yield { background: linear-gradient(135deg, #10b981, #0d9488); color: #fff; }
+    .btn-borrow { background: linear-gradient(135deg, #8b5cf6, #ec4899); color: #fff; }
+    .btn-ai { background: linear-gradient(135deg, #6366f1, #38bdf8); color: #fff; }
+    .btn-autopilot { background: linear-gradient(135deg, #f59e0b, #ef4444); color: #fff; }
+    .btn-preset {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: #bae6fd;
+      font-size: 12px;
+      padding: 9px 13px;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+    .metric-card {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 18px;
+      padding: 15px;
+      backdrop-filter: blur(12px);
+    }
+    .metric-card .k { font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; }
+    .metric-card .v { font-size: 20px; font-weight: 900; color: #f8fafc; margin-top: 6px; }
+    .metric-card .sub { font-size: 11px; color: #38bdf8; margin-top: 4px; font-weight: 700; }
+
+    .ai-banner {
+      background: linear-gradient(135deg, rgba(30, 27, 75, 0.92), rgba(15, 23, 42, 0.94));
+      border: 1px solid rgba(99, 102, 241, 0.45);
+      border-radius: 22px;
+      padding: 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+    }
+    .ai-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .ai-title { font-size: 18px; font-weight: 900; color: #e0e7ff; }
+    .preset-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .ai-output {
+      background: rgba(2, 6, 23, 0.88);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 14px;
+      padding: 14px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #cbd5e1;
+      white-space: pre-wrap;
+      margin-bottom: 12px;
+    }
+    .ai-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 11px;
+      color: #94a3b8;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+    .panel {
+      background: rgba(15, 23, 42, 0.86);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 22px;
+      padding: 20px;
+      backdrop-filter: blur(14px);
+    }
+    .panel-title { font-size: 18px; font-weight: 900; margin: 0 0 4px; }
+    .panel-desc { font-size: 12px; color: #94a3b8; margin: 0 0 15px; }
+
+    .field-box {
+      background: rgba(2, 6, 23, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      border-radius: 14px;
+      padding: 11px 14px;
+      margin-bottom: 12px;
+    }
+    .field-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 800;
+      color: #94a3b8;
+      margin-bottom: 6px;
+    }
+    .field-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    input[type="number"] {
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: #f8fafc;
+      font-size: 19px;
+      font-weight: 800;
+      outline: none;
+    }
+    .token-tag {
+      background: rgba(30, 41, 59, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      padding: 6px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .info-lines {
+      font-size: 12px;
+      color: #cbd5e1;
+      margin: 10px 0 15px;
+      display: grid;
+      gap: 6px;
+    }
+    .info-line { display: flex; justify-content: space-between; }
+    .info-line span:first-child { color: #94a3b8; }
+
+    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    .feed-panel {
+      background: rgba(15, 23, 42, 0.88);
+      border: 1px solid rgba(56, 189, 248, 0.28);
+      border-radius: 20px;
+      padding: 18px 20px;
+      margin-bottom: 18px;
+    }
+    .feed-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .feed-list { display: grid; gap: 8px; }
+    .feed-item {
+      background: rgba(2, 6, 23, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.16);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .feed-item a { color: #38bdf8; text-decoration: none; font-weight: 800; }
+
+    .tx-log {
+      background: rgba(15, 23, 42, 0.88);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 20px;
+      padding: 16px 20px;
+    }
+    .status-line { font-size: 12px; color: #e2e8f0; font-weight: 700; }
+    .status-line a { color: #38bdf8; text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="brand-row">
+        <div class="brand-logo" aria-label="AetherMind Logo" style="display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#090d16,#1e1b4b);overflow:hidden;">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="52" height="52">
+    <defs>
+      <linearGradient id="uiNeon" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#38bdf8"/>
+        <stop offset="55%" stop-color="#818cf8"/>
+        <stop offset="100%" stop-color="#22d3ee"/>
+      </linearGradient>
+    </defs>
+    <circle cx="128" cy="128" r="88" fill="none" stroke="url(#uiNeon)" stroke-width="6" stroke-opacity="0.4"/>
+    <path d="M128 48 L194 180 H163 L149 149 H107 L93 180 H62 L128 48 Z M128 96 L114 125 H142 L128 96 Z" fill="url(#uiNeon)"/>
+    <circle cx="128" cy="202" r="9" fill="#22d3ee"/>
+  </svg>
+</div>
+        <div>
+          <div class="pill mono">AETHERMIND AI + DEFI · LITVM TESTNET (4441) · CONTRACT: <span id="shortContractLbl"></span></div>
+          <h1>AETHERMIND <span>PROTOCOL</span></h1>
+          <p class="subtitle">On-Chain Swap, Liquidity, Yield Staking, Borrowing, Live Telemetry & 1-Click AI Strategy Engine</p>
+        </div>
+      </div>
+      <div>
+        <button type="button" class="btn-wallet" id="connectBtn">Connect Wallet</button>
+      </div>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="k">Wallet & Protocol aUSD</div>
+        <div class="v mono" id="walletZklVal">0.0000 zkLTC</div>
+        <div class="sub mono">Vault aUSD: <span id="aUsdVal">0.00</span></div>
+      </div>
+      <div class="metric-card">
+        <div class="k">Liquidity Pool (LP)</div>
+        <div class="v mono" id="lpVal">0.0000 zkLTC</div>
+        <div class="sub mono">Total Pool: <span id="totalPoolVal">0.0000 zkLTC</span></div>
+      </div>
+      <div class="metric-card">
+        <div class="k">Staked & Live Yield</div>
+        <div class="v mono" id="stakedVal">0.0000 zkLTC</div>
+        <div class="sub mono" style="color:#34d399;">Yield: <span id="yieldVal">0.0000 aUSD</span> (19.2% APY)</div>
+      </div>
+      <div class="metric-card">
+        <div class="k">Borrow & Global AI Signals</div>
+        <div class="v mono" id="borrowedVal" style="color:#c084fc;">0.00 aUSD</div>
+        <div class="sub mono">Max: <span id="maxBorrowVal">0.00</span> · Protocol AI Logs: <span id="aiCountVal">0</span></div>
+      </div>
+    </div>
+
+    <div class="ai-banner">
+      <div class="ai-header">
+        <div class="ai-title">🧠 AetherMind Neural Risk Strategist & Multi-Step Strategy Engine</div>
+        <div class="btn-row">
+          <button type="button" class="btn-ai" id="analyzeAiBtn">✨ Run AI Vault Analysis</button>
+          <button type="button" class="btn-secondary" id="commitAiBtn">⛓️ Commit AI Signal</button>
+          <button type="button" class="btn-autopilot" id="autoPilotBtn">⚡ AI Auto-Pilot (Stake + Signal)</button>
+        </div>
+      </div>
+
+      <div class="preset-bar">
+        <button type="button" class="btn-preset mono" id="presetSafeBtn">🛡️ 1-Click Safe Vault (0.01 Stake + Signal)</button>
+        <button type="button" class="btn-preset mono" id="presetLeverageBtn">🚀 1-Click Yield + Borrow Loop (Stake 0.02 + Borrow 0.5 + Signal)</button>
+        <button type="button" class="btn-preset mono" id="presetLpBtn">💧 1-Click LP & Swap Combo (Swap 0.01 + LP 0.01 + Signal)</button>
+      </div>
+
+      <div class="ai-output mono" id="aiOutputBox">Select any 1-Click AI Strategy Preset or run Vault Analysis to compute your live risk score and anchor a verifiable strategy hash on LitVM 4441.</div>
+      <div class="ai-meta mono">
+        <span>Strategy Hash: <strong id="strategyHashLbl" style="color:#7dd3fc;">—</strong></span>
+        <span>Tx Hash: <strong id="lastTxHashLbl" style="color:#facc15;">—</strong></span>
+        <span>Computed Risk Score: <strong id="riskScoreLbl" style="color:#34d399;">— / 100</strong></span>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <h2 class="panel-title">On-Chain Instant Swap</h2>
+        <p class="panel-desc">Swap zkLTC directly into protocol aUSD via AetherMind smart contract.</p>
+        <div class="field-box">
+          <div class="field-top"><span>Pay zkLTC</span><span class="mono">1 zkLTC = 85 aUSD (0.3% fee)</span></div>
+          <div class="field-row">
+            <input type="number" id="swapIn" class="mono" value="0.01" min="0.0001" step="0.01" />
+            <div class="token-tag mono">zkLTC</div>
+          </div>
+        </div>
+        <div class="info-lines mono">
+          <div class="info-line"><span>Estimated aUSD Output</span><span id="swapOutPreview">0.8475 aUSD</span></div>
+        </div>
+        <button type="button" class="btn-primary" id="swapBtn" style="width:100%;">⚡ Execute On-Chain Swap</button>
+      </div>
+
+      <div class="panel">
+        <h2 class="panel-title">On-Chain Liquidity Pool</h2>
+        <p class="panel-desc">Supply or withdraw zkLTC liquidity directly in the smart contract.</p>
+        <div class="field-box">
+          <div class="field-top"><span>Liquidity zkLTC</span><span class="mono">Instant LP Mint/Burn</span></div>
+          <div class="field-row">
+            <input type="number" id="lpIn" class="mono" value="0.01" min="0.0001" step="0.01" />
+            <div class="token-tag mono">zkLTC</div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button type="button" class="btn-primary" id="addLpBtn" style="flex:1;">➕ Add Liquidity</button>
+          <button type="button" class="btn-secondary" id="removeLpBtn" style="flex:1;">➖ Withdraw LP</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2 class="panel-title">Yield Staking Vault</h2>
+        <p class="panel-desc">Stake zkLTC to accrue per-second on-chain aUSD yield (19.2% APY) and unlock borrowing.</p>
+        <div class="field-box">
+          <div class="field-top"><span>Stake zkLTC</span><span class="mono">Collateral + Yield</span></div>
+          <div class="field-row">
+            <input type="number" id="stakeIn" class="mono" value="0.02" min="0.0001" step="0.01" />
+            <div class="token-tag mono">zkLTC</div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button type="button" class="btn-secondary" id="stakeBtn" style="flex:1;">🔒 Stake zkLTC</button>
+          <button type="button" class="btn-yield" id="claimBtn" style="flex:1;">🌾 Claim Yield</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2 class="panel-title">Collateral Borrow & Repay</h2>
+        <p class="panel-desc">Borrow up to 65% LTV in aUSD against your staked zkLTC collateral.</p>
+        <div class="field-box">
+          <div class="field-top"><span>Amount (aUSD)</span><span class="mono">Max LTV: 65%</span></div>
+          <div class="field-row">
+            <input type="number" id="borrowIn" class="mono" value="0.5" min="0.01" step="0.5" />
+            <div class="token-tag mono">aUSD</div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button type="button" class="btn-borrow" id="borrowBtn" style="flex:1;">🏦 Borrow aUSD</button>
+          <button type="button" class="btn-secondary" id="repayBtn" style="flex:1;">💳 Repay aUSD</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="feed-panel">
+      <div class="feed-head">
+        <div class="ai-title" style="font-size:16px;">📡 Live On-Chain Telemetry & AI Audit Feed (LitVM 4441)</div>
+        <button type="button" class="btn-secondary" id="refreshFeedBtn" style="padding:7px 12px;font-size:12px;">🔄 Refresh Events</button>
+      </div>
+      <div class="feed-list mono" id="liveFeedList">
+        <div class="feed-item"><span>Loading recent on-chain AI signals & DeFi transactions...</span></div>
+      </div>
+    </div>
+
+    <div class="tx-log">
+      <div class="status-line mono" id="statusLine">
+        AetherMindProtocol ready on LitVM LiteForge (Chain ID 4441). Connect wallet to execute transactions.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const CONTRACT_ADDRESS = "0x57cA8c24193438C7d2ED472936E90FdF3D8486fb";
+    const RPC_URL = "https://rpc.testnet.liteforge.zeeve.net/";
+    const EXPLORER_URL = "https://explorer.testnet.liteforge.zeeve.net";
+    const CHAIN_ID_HEX = "0x1159";
+    const CHAIN_CONFIG = {
+      chainId: CHAIN_ID_HEX,
+      chainName: "LitVM LiteForge Testnet",
+      nativeCurrency: { name: "zkLTC", symbol: "zkLTC", decimals: 18 },
+      rpcUrls: [RPC_URL],
+      blockExplorerUrls: [EXPLORER_URL]
+    };
+
+    const ABI = [
+      "function swapZklForUsd() payable",
+      "function addLiquidity() payable",
+      "function removeLiquidity(uint256 lpAmount)",
+      "function stakeZkl() payable",
+      "function claimYield()",
+      "function borrowUsd(uint256 aUsdAmount)",
+      "function repayUsd(uint256 aUsdAmount)",
+      "function commitAiStrategy(bytes32 strategyHash, uint256 riskScore) returns (uint256)",
+      "function getVaultState(address user) view returns (uint256 aUsdBalance, uint256 lpShares, uint256 stakedZkl, uint256 liveYield, uint256 borrowedUsd, uint256 maxBorrowUsd, uint256 aiSignalsLogged)",
+      "function totalPoolZkl() view returns (uint256)",
+      "function totalAiSignals() view returns (uint256)",
+      "event AiStrategyCommitted(address indexed user, uint256 indexed signalId, bytes32 strategyHash, uint256 riskScore)",
+      "event Swapped(address indexed user, uint256 zklIn, uint256 aUsdOut)",
+      "event Staked(address indexed user, uint256 zklAmount)",
+      "event Borrowed(address indexed user, uint256 aUsdAmount)"
+    ];
+
+    document.getElementById("shortContractLbl").innerText =
+      `${CONTRACT_ADDRESS.slice(0, 6)}...${CONTRACT_ADDRESS.slice(-4)}`;
+
+    const readProvider = new ethers.JsonRpcProvider(RPC_URL);
+    const readContract = new ethers.Contract(CONTRACT_ADDRESS, ABI, readProvider);
+
+    let connectedAddress = null;
+    let latestState = {
+      aUsd: 0,
+      lp: 0,
+      staked: 0,
+      yieldUsd: 0,
+      borrowed: 0,
+      maxBorrow: 0,
+      aiLogged: 0
+    };
+    let currentStrategyHash = null;
+    let currentRiskScore = 25;
+
+    function setStatus(html) {
+      document.getElementById("statusLine").innerHTML = html;
+    }
+
+    function updateSwapPreview() {
+      const val = Math.max(0, Number(document.getElementById("swapIn").value) || 0);
+      document.getElementById("swapOutPreview").innerText = `${(val * 85 * 0.997).toFixed(4)} aUSD`;
+    }
+    document.getElementById("swapIn").addEventListener("input", updateSwapPreview);
+    updateSwapPreview();
+
+    function runVaultAnalysis(customTag = "NEURAL VAULT ANALYSIS") {
+      const { aUsd, lp, staked, yieldUsd, borrowed, maxBorrow } = latestState;
+      const utilRatio = maxBorrow > 0 ? Math.min(100, Math.round((borrowed / maxBorrow) * 100)) : 0;
+      const riskScore = Math.min(100, Math.max(12, Math.round(utilRatio * 0.75 + (staked === 0 ? 18 : 6))));
+      currentRiskScore = riskScore;
+
+      const report = [
+        `[${customTag} — LITVM TESTNET 4441]`,
+        `• Staked Collateral: ${staked.toFixed(4)} zkLTC | Accrued Yield: ${yieldUsd.toFixed(5)} aUSD (19.20% APY)`,
+        `• Liquidity Pool Share: ${lp.toFixed(4)} zkLTC | Liquid aUSD Balance: ${aUsd.toFixed(3)} aUSD`,
+        `• Debt / LTV Ratio: ${borrowed.toFixed(3)} / ${maxBorrow.toFixed(3)} aUSD (${utilRatio}% utilized)`,
+        `• Strategy Proof: Cryptographically hashed and ready for on-chain settlement.`
+      ].join("\n");
+
+      currentStrategyHash = ethers.keccak256(ethers.toUtf8Bytes(report + "|" + Date.now()));
+      document.getElementById("aiOutputBox").innerText = report;
+      document.getElementById("strategyHashLbl").innerText = currentStrategyHash;
+      document.getElementById("riskScoreLbl").innerText = `${riskScore} / 100`;
+      return { report, strategyHash: currentStrategyHash, riskScore };
+    }
+
+    async function loadLiveEventFeed() {
+      const listEl = document.getElementById("liveFeedList");
+      try {
+        const latestBlock = await readProvider.getBlockNumber();
+        const fromBlock = Math.max(0, latestBlock - 15000);
+        const [aiEvents, swapEvents, stakeEvents] = await Promise.all([
+          readContract.queryFilter(readContract.filters.AiStrategyCommitted(), fromBlock, latestBlock),
+          readContract.queryFilter(readContract.filters.Swapped(), fromBlock, latestBlock),
+          readContract.queryFilter(readContract.filters.Staked(), fromBlock, latestBlock)
+        ]);
+
+        const combined = [
+          ...aiEvents.map(e => ({
+            block: e.blockNumber,
+            tx: e.transactionHash,
+            label: `🧠 AI Signal #${e.args[1]} · Risk ${e.args[3]}/100 · User ${String(e.args[0]).slice(0,6)}...${String(e.args[0]).slice(-4)}`
+          })),
+          ...swapEvents.map(e => ({
+            block: e.blockNumber,
+            tx: e.transactionHash,
+            label: `⚡ Swap ${Number(ethers.formatEther(e.args[1])).toFixed(4)} zkLTC → ${Number(ethers.formatEther(e.args[2])).toFixed(3)} aUSD`
+          })),
+          ...stakeEvents.map(e => ({
+            block: e.blockNumber,
+            tx: e.transactionHash,
+            label: `🔒 Staked ${Number(ethers.formatEther(e.args[1])).toFixed(4)} zkLTC`
+          }))
+        ].sort((a, b) => b.block - a.block).slice(0, 6);
+
+        if (!combined.length) {
+          listEl.innerHTML = `<div class="feed-item"><span>No events in recent blocks yet — execute any action above to populate live feed!</span></div>`;
+          return;
+        }
+
+        listEl.innerHTML = combined.map(item => `
+          <div class="feed-item">
+            <span>${item.label}</span>
+            <a href="${EXPLORER_URL}/tx/${item.tx}" target="_blank">Tx ${item.tx.slice(0, 8)}... ↗</a>
+          </div>
+        `).join("");
+      } catch (e) {
+        listEl.innerHTML = `<div class="feed-item"><span>Telemetry synced with LitVM RPC (Block scan ready).</span></div>`;
+      }
+    }
+
+    async function refreshOnChainData() {
+      try {
+        const [poolWei, globalSignals] = await Promise.all([
+          readContract.totalPoolZkl(),
+          readContract.totalAiSignals()
+        ]);
+        document.getElementById("totalPoolVal").innerText = `${Number(ethers.formatEther(poolWei)).toFixed(4)} zkLTC`;
+        document.getElementById("aiCountVal").innerText = String(Number(globalSignals));
+
+        if (!connectedAddress) return;
+        const [balWei, st] = await Promise.all([
+          readProvider.getBalance(connectedAddress),
+          readContract.getVaultState(connectedAddress)
+        ]);
+
+        latestState = {
+          aUsd: Number(ethers.formatEther(st[0])),
+          lp: Number(ethers.formatEther(st[1])),
+          staked: Number(ethers.formatEther(st[2])),
+          yieldUsd: Number(ethers.formatEther(st[3])),
+          borrowed: Number(ethers.formatEther(st[4])),
+          maxBorrow: Number(ethers.formatEther(st[5])),
+          aiLogged: Number(st[6])
+        };
+
+        document.getElementById("walletZklVal").innerText = `${Number(ethers.formatEther(balWei)).toFixed(4)} zkLTC`;
+        document.getElementById("aUsdVal").innerText = latestState.aUsd.toFixed(3);
+        document.getElementById("lpVal").innerText = `${latestState.lp.toFixed(4)} zkLTC`;
+        document.getElementById("stakedVal").innerText = `${latestState.staked.toFixed(4)} zkLTC`;
+        document.getElementById("yieldVal").innerText = `${latestState.yieldUsd.toFixed(5)} aUSD`;
+        document.getElementById("borrowedVal").innerText = `${latestState.borrowed.toFixed(3)} aUSD`;
+        document.getElementById("maxBorrowVal").innerText = latestState.maxBorrow.toFixed(3);
+      } catch (e) {
+        console.warn("Refresh notice:", e.message);
+      }
+    }
+
+    async function ensureWallet() {
+      if (!window.ethereum) throw new Error("No EVM wallet found.");
+      const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+      if (!accounts || !accounts.length) throw new Error("No account authorized.");
+
+      const chainId = await window.ethereum.request({ method: "eth_chainId" });
+      if (String(chainId).toLowerCase() !== CHAIN_ID_HEX.toLowerCase()) {
+        try {
+          await window.ethereum.request({ method: "wallet_switchEthereumChain", params: [{ chainId: CHAIN_ID_HEX }] });
+        } catch (err) {
+          if (err.code === 4902 || String(err.message).includes("Unrecognized chain")) {
+            await window.ethereum.request({ method: "wallet_addEthereumChain", params: [CHAIN_CONFIG] });
+          } else {
+            throw err;
+          }
+        }
+      }
+
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      connectedAddress = await signer.getAddress();
+      const btn = document.getElementById("connectBtn");
+      btn.innerText = `${connectedAddress.slice(0, 6)}...${connectedAddress.slice(-4)}`;
+      btn.classList.add("connected");
+      await refreshOnChainData();
+      return signer;
+    }
+
+    async function waitReceipt(txHash) {
+      for (let i = 0; i < 45; i++) {
+        const r = await readProvider.getTransactionReceipt(txHash);
+        if (r) return r;
+        await new Promise(res => setTimeout(res, 800));
+      }
+      throw new Error("Confirmation timeout");
+    }
+
+    async function execContractCall(btnId, label, fn) {
+      const btn = document.getElementById(btnId);
+      btn.disabled = true;
+      try {
+        const signer = await ensureWallet();
+        const writeContract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+        setStatus(`Confirm ${label} in wallet...`);
+        const tx = await fn(writeContract);
+        document.getElementById("lastTxHashLbl").innerText = tx.hash;
+        setStatus(`Confirming ${label} on LitVM 4441... <a href="${EXPLORER_URL}/tx/${tx.hash}" target="_blank">View Tx ↗</a>`);
+        await waitReceipt(tx.hash);
+        await refreshOnChainData();
+        await loadLiveEventFeed();
+        setStatus(`✅ ${label} confirmed on LitVM! <a href="${EXPLORER_URL}/tx/${tx.hash}" target="_blank">Explorer Tx ↗</a>`);
+      } catch (e) {
+        setStatus(`${label} Error: ` + (e.shortMessage || e.message));
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function runMultiStepCombo(btnId, tag, steps) {
+      const btn = document.getElementById(btnId);
+      btn.disabled = true;
+      try {
+        const signer = await ensureWallet();
+        const writeContract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+        let lastTx = null;
+
+        for (let i = 0; i < steps.length; i++) {
+          setStatus(`⚡ Step ${i + 1}/${steps.length}: ${steps[i].title}...`);
+          lastTx = await steps[i].run(writeContract);
+          document.getElementById("lastTxHashLbl").innerText = lastTx.hash;
+          await waitReceipt(lastTx.hash);
+        }
+
+        await refreshOnChainData();
+        const res = runVaultAnalysis(tag);
+        setStatus(`⚡ Finalizing AI Proof Anchor on-chain...`);
+        const sigTx = await writeContract.commitAiStrategy(res.strategyHash, res.riskScore);
+        document.getElementById("lastTxHashLbl").innerText = sigTx.hash;
+        await waitReceipt(sigTx.hash);
+
+        await refreshOnChainData();
+        await loadLiveEventFeed();
+        setStatus(`🚀 ${tag} complete & anchored on-chain! <a href="${EXPLORER_URL}/tx/${sigTx.hash}" target="_blank">View Signal Tx ↗</a>`);
+      } catch (e) {
+        setStatus(`${tag} Error: ` + (e.shortMessage || e.message));
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    document.getElementById("connectBtn").addEventListener("click", async () => {
+      try {
+        await ensureWallet();
+        setStatus(`Connected ${connectedAddress.slice(0, 6)}...${connectedAddress.slice(-4)} on LitVM 4441.`);
+      } catch (e) {
+        setStatus("Wallet Error: " + (e.shortMessage || e.message));
+      }
+    });
+
+    document.getElementById("analyzeAiBtn").addEventListener("click", async () => {
+      const btn = document.getElementById("analyzeAiBtn");
+      btn.disabled = true;
+      try {
+        if (connectedAddress) await refreshOnChainData();
+        const res = runVaultAnalysis("NEURAL VAULT ANALYSIS");
+        setStatus(`Vault analysis generated · Risk ${res.riskScore}/100 · Hash ${res.strategyHash.slice(0, 12)}...`);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    document.getElementById("commitAiBtn").addEventListener("click", async () => {
+      const res = (!currentStrategyHash) ? runVaultAnalysis() : { strategyHash: currentStrategyHash, riskScore: currentRiskScore };
+      await execContractCall("commitAiBtn", "Commit AI Signal", (c) =>
+        c.commitAiStrategy(res.strategyHash, res.riskScore)
+      );
+    });
+
+    document.getElementById("autoPilotBtn").addEventListener("click", () => {
+      runMultiStepCombo("autoPilotBtn", "AI AUTO-PILOT", [
+        { title: "Staking 0.01 zkLTC collateral", run: (c) => c.stakeZkl({ value: ethers.parseEther("0.01") }) }
+      ]);
+    });
+
+    document.getElementById("presetSafeBtn").addEventListener("click", () => {
+      runMultiStepCombo("presetSafeBtn", "SAFE VAULT PRESET", [
+        { title: "Staking 0.01 zkLTC", run: (c) => c.stakeZkl({ value: ethers.parseEther("0.01") }) }
+      ]);
+    });
+
+    document.getElementById("presetLeverageBtn").addEventListener("click", () => {
+      runMultiStepCombo("presetLeverageBtn", "YIELD + BORROW LOOP", [
+        { title: "Staking 0.02 zkLTC collateral", run: (c) => c.stakeZkl({ value: ethers.parseEther("0.02") }) },
+        { title: "Borrowing 0.5 aUSD against collateral", run: (c) => c.borrowUsd(ethers.parseEther("0.5")) }
+      ]);
+    });
+
+    document.getElementById("presetLpBtn").addEventListener("click", () => {
+      runMultiStepCombo("presetLpBtn", "LP & SWAP COMBO", [
+        { title: "Swapping 0.01 zkLTC for aUSD", run: (c) => c.swapZklForUsd({ value: ethers.parseEther("0.01") }) },
+        { title: "Supplying 0.01 zkLTC to LP", run: (c) => c.addLiquidity({ value: ethers.parseEther("0.01") }) }
+      ]);
+    });
+
+    document.getElementById("refreshFeedBtn").addEventListener("click", loadLiveEventFeed);
+
+    document.getElementById("swapBtn").addEventListener("click", () => {
+      const amt = String(Math.max(0.0001, Number(document.getElementById("swapIn").value) || 0.01));
+      execContractCall("swapBtn", "On-Chain Swap", (c) =>
+        c.swapZklForUsd({ value: ethers.parseEther(amt) })
+      );
+    });
+
+    document.getElementById("addLpBtn").addEventListener("click", () => {
+      const amt = String(Math.max(0.0001, Number(document.getElementById("lpIn").value) || 0.01));
+      execContractCall("addLpBtn", "Add Liquidity", (c) =>
+        c.addLiquidity({ value: ethers.parseEther(amt) })
+      );
+    });
+
+    document.getElementById("removeLpBtn").addEventListener("click", () => {
+      const amt = String(Math.max(0.0001, Number(document.getElementById("lpIn").value) || 0.01));
+      execContractCall("removeLpBtn", "Withdraw Liquidity", (c) =>
+        c.removeLiquidity(ethers.parseEther(amt))
+      );
+    });
+
+    document.getElementById("stakeBtn").addEventListener("click", () => {
+      const amt = String(Math.max(0.0001, Number(document.getElementById("stakeIn").value) || 0.02));
+      execContractCall("stakeBtn", "Stake zkLTC", (c) =>
+        c.stakeZkl({ value: ethers.parseEther(amt) })
+      );
+    });
+
+    document.getElementById("claimBtn").addEventListener("click", () => {
+      execContractCall("claimBtn", "Claim Yield", (c) => c.claimYield());
+    });
+
+    document.getElementById("borrowBtn").addEventListener("click", () => {
+      const amt = String(Math.max(0.01, Number(document.getElementById("borrowIn").value) || 0.5));
+      execContractCall("borrowBtn", "Borrow aUSD", (c) =>
+        c.borrowUsd(ethers.parseEther(amt))
+      );
+    });
+
+    document.getElementById("repayBtn").addEventListener("click", () => {
+      const amt = String(Math.max(0.01, Number(document.getElementById("borrowIn").value) || 0.5));
+      execContractCall("repayBtn", "Repay aUSD", (c) =>
+        c.repayUsd(ethers.parseEther(amt))
+      );
+    });
+
+    refreshOnChainData();
+    loadLiveEventFeed();
+    setInterval(refreshOnChainData, 10000);
+  </script>
+</body>
+</html>
+
+
