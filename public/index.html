@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AETHERMIND // AI + DeFi Protocol on LitVM 4441</title>
+  <title>OmniLit Finance // AI + DeFi Protocol on LitVM 4441</title>
   <link rel="icon" type="image/svg+xml" href="/logo.svg" />
   <link rel="alternate icon" type="image/png" href="/logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -57,7 +57,7 @@
     h1 span { color: #38bdf8; }
     .subtitle { margin: 4px 0 0; color: #94a3b8; font-size: 13px; }
 
-    button {
+    button, .btn-link {
       font-family: inherit;
       font-weight: 800;
       border: none;
@@ -65,12 +65,17 @@
       border-radius: 12px;
       padding: 11px 15px;
       font-size: 13px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       transition: transform 0.12s ease, filter 0.15s ease;
     }
-    button:active { transform: scale(0.97); }
-    button:hover { filter: brightness(1.08); }
+    button:active, .btn-link:active { transform: scale(0.97); }
+    button:hover, .btn-link:hover { filter: brightness(1.08); }
     button:disabled { opacity: 0.5; cursor: not-allowed; }
 
+    .header-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
     .btn-wallet { background: linear-gradient(135deg, #0ea5e9, #2563eb); color: #fff; }
     .btn-wallet.connected { background: #059669; }
     .btn-primary { background: linear-gradient(135deg, #3b82f6, #06b6d4); color: #fff; }
@@ -255,27 +260,29 @@
   <div class="container">
     <div class="header">
       <div class="brand-row">
-        <div class="brand-logo" aria-label="AetherMind Logo" style="display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#090d16,#1e1b4b);overflow:hidden;">
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="52" height="52">
-    <defs>
-      <linearGradient id="uiNeon" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#38bdf8"/>
-        <stop offset="55%" stop-color="#818cf8"/>
-        <stop offset="100%" stop-color="#22d3ee"/>
-      </linearGradient>
-    </defs>
-    <circle cx="128" cy="128" r="88" fill="none" stroke="url(#uiNeon)" stroke-width="6" stroke-opacity="0.4"/>
-    <path d="M128 48 L194 180 H163 L149 149 H107 L93 180 H62 L128 48 Z M128 96 L114 125 H142 L128 96 Z" fill="url(#uiNeon)"/>
-    <circle cx="128" cy="202" r="9" fill="#22d3ee"/>
-  </svg>
-</div>
+        <div class="brand-logo" aria-label="OmniLit Finance Logo" style="display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#050814,#172554);overflow:hidden;">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="52" height="52">
+            <defs>
+              <linearGradient id="olGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#22d3ee"/>
+                <stop offset="50%" stop-color="#3b82f6"/>
+                <stop offset="100%" stop-color="#a855f7"/>
+              </linearGradient>
+            </defs>
+            <circle cx="128" cy="128" r="84" fill="none" stroke="url(#olGrad)" stroke-width="6" stroke-opacity="0.5"/>
+            <polygon points="128,44 198,128 128,212 58,128" fill="none" stroke="url(#olGrad)" stroke-width="11" stroke-linejoin="round"/>
+            <circle cx="128" cy="128" r="24" fill="#22d3ee"/>
+            <circle cx="128" cy="128" r="10" fill="#050814"/>
+          </svg>
+        </div>
         <div>
-          <div class="pill mono">AETHERMIND AI + DEFI · LITVM TESTNET (4441) · CONTRACT: <span id="shortContractLbl"></span></div>
-          <h1>AETHERMIND <span>PROTOCOL</span></h1>
+          <div class="pill mono">OMNILIT FINANCE · LITVM TESTNET (4441) · CONTRACT: <span id="shortContractLbl"></span></div>
+          <h1>OMNILIT <span>FINANCE</span></h1>
           <p class="subtitle">On-Chain Swap, Liquidity, Yield Staking, Borrowing, Live Telemetry & 1-Click AI Strategy Engine</p>
         </div>
       </div>
-      <div>
+      <div class="header-actions">
+        <a href="/litepaper.html" target="_blank" class="btn-link btn-secondary">📄 Litepaper</a>
         <button type="button" class="btn-wallet" id="connectBtn">Connect Wallet</button>
       </div>
     </div>
@@ -305,7 +312,7 @@
 
     <div class="ai-banner">
       <div class="ai-header">
-        <div class="ai-title">🧠 AetherMind Neural Risk Strategist & Multi-Step Strategy Engine</div>
+        <div class="ai-title">🧠 OmniLit Neural Risk Strategist & Multi-Step Strategy Engine</div>
         <div class="btn-row">
           <button type="button" class="btn-ai" id="analyzeAiBtn">✨ Run AI Vault Analysis</button>
           <button type="button" class="btn-secondary" id="commitAiBtn">⛓️ Commit AI Signal</button>
@@ -330,7 +337,7 @@
     <div class="grid-2">
       <div class="panel">
         <h2 class="panel-title">On-Chain Instant Swap</h2>
-        <p class="panel-desc">Swap zkLTC directly into protocol aUSD via AetherMind smart contract.</p>
+        <p class="panel-desc">Swap zkLTC directly into protocol aUSD via OmniLit Finance smart contract.</p>
         <div class="field-box">
           <div class="field-top"><span>Pay zkLTC</span><span class="mono">1 zkLTC = 85 aUSD (0.3% fee)</span></div>
           <div class="field-row">
@@ -405,7 +412,7 @@
 
     <div class="tx-log">
       <div class="status-line mono" id="statusLine">
-        AetherMindProtocol ready on LitVM LiteForge (Chain ID 4441). Connect wallet to execute transactions.
+        OmniLit Finance ready on LitVM LiteForge (Chain ID 4441). Connect wallet to execute transactions.
       </div>
     </div>
   </div>
@@ -772,5 +779,3 @@
   </script>
 </body>
 </html>
-
-

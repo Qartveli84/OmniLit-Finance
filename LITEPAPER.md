@@ -66,3 +66,5 @@ Users work with native **zkLTC** and protocol-accounted **aUSD** (fixed in-contr
 - **Internal aUSD Ledger:** `aUSD` is tracked inside `UserVault` balances rather than as a separate ERC-20 token contract.
 - **Fixed Rate:** The `85 aUSD` per `zkLTC` conversion rate is hardcoded for deterministic testnet behavior.
 - **Staked Principal:** In v1, staked `zkLTC` stays locked as your permanent yield and borrow collateral base (unlike `lpShares`, which can be withdrawn via `removeLiquidity`).
+
+
