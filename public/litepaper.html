@@ -5,45 +5,119 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OmniLit Finance — Litepaper</title>
   <style>
-    body { font-family: system-ui, -apple-system, sans-serif; max-width: 780px; margin: 40px auto; padding: 0 20px; line-height: 1.65; color: #111827; background: #ffffff; }
-    h1 { font-size: 2rem; margin-bottom: 0.25rem; }
-    h2 { font-size: 1.25rem; margin-top: 2rem; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.3rem; }
-    .meta { color: #4b5563; font-size: 0.95rem; margin-bottom: 1.5rem; }
-    .btn { display: inline-block; margin-top: 16px; padding: 8px 14px; background: #111827; color: #fff; text-decoration: none; border-radius: 6px; font-size: 0.9rem; cursor: pointer; border: none; }
-    @media print { .no-print { display: none; } body { margin: 0; max-width: 100%; } }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: #111827;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px;
+      background-color: #ffffff;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #0f172a;
+    }
+    .meta {
+      font-size: 0.95rem;
+      color: #4b5563;
+      margin-bottom: 24px;
+    }
+    .meta a {
+      color: #2563eb;
+      text-decoration: none;
+    }
+    .meta a:hover {
+      text-decoration: underline;
+    }
+    .btn-print {
+      display: inline-block;
+      background-color: #111827;
+      color: #ffffff;
+      border: none;
+      padding: 10px 18px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-bottom: 32px;
+    }
+    .btn-print:hover {
+      background-color: #374151;
+    }
+    h2 {
+      font-size: 1.35rem;
+      font-weight: 600;
+      margin-top: 32px;
+      margin-bottom: 12px;
+      color: #0f172a;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 6px;
+    }
+    p, li {
+      font-size: 1rem;
+      color: #374151;
+    }
+    ul {
+      padding-left: 22px;
+    }
+    li {
+      margin-bottom: 8px;
+    }
+    a {
+      color: #2563eb;
+    }
+    @media print {
+      .btn-print {
+        display: none;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+      }
+    }
   </style>
 </head>
 <body>
+
   <h1>OmniLit Finance — Litepaper</h1>
   <div class="meta">
-    <strong>Web App:</strong> <a href="https://omnilit-finance.xyz/">https://omnilit-finance.xyz/</a><br />
-    <strong>Status:</strong> Active testnet / early-stage deployment (full whitepaper in preparation)
+    <div><strong>Web App:</strong> <a href="https://omnilit-finance.xyz/" target="_blank">https://omnilit-finance.xyz/</a></div>
+    <div><strong>Status:</strong> Active testnet / early-stage deployment (full whitepaper in preparation)</div>
   </div>
-  <button class="btn no-print" onclick="window.print()">Save / Print as PDF</button>
 
-  <h2>1. Overview & Problem Statement</h2>
-  <p>OmniLit Finance is a decentralized finance (DeFi) application focused on streamlined on-chain financial workflows, clear execution, and low friction. Emerging blockchain ecosystems often start with fragmented tooling and complex user flows; OmniLit Finance provides a clean interface and modular smart contracts for reliable interaction.</p>
+  <button class="btn-print" onclick="window.print()">Save / Print as PDF</button>
 
-  <h2>2. Core Features & Architecture</h2>
+  <h2>1. Overview &amp; Problem Statement</h2>
+  <p>
+    OmniLit Finance is a decentralized finance (DeFi) application focused on streamlined on-chain financial workflows, clear execution, and low friction. Emerging blockchain ecosystems often start with fragmented tooling and complex user flows; OmniLit Finance provides a clean interface and modular smart contracts for reliable interaction.
+  </p>
+
+  <h2>2. Core Features &amp; Architecture</h2>
   <ul>
-    <li><strong>Web Interface:</strong> Accessible via <a href="https://omnilit-finance.xyz/">omnilit-finance.xyz</a> with direct wallet interaction and clear transaction feedback.</li>
+    <li><strong>Web Interface:</strong> Accessible via <a href="https://omnilit-finance.xyz/" target="_blank">omnilit-finance.xyz</a> with direct wallet interaction and clear transaction feedback.</li>
     <li><strong>Smart Contract Layer:</strong> Modular contract components designed for clarity, predictable execution, and ecosystem integration.</li>
     <li><strong>Ecosystem Fit:</strong> Built for smooth operation within its target EVM / testnet environment.</li>
   </ul>
 
-  <h2>3. Tokenomics & Value Mechanics</h2>
-  <p>Tokenomics, fee mechanics, and any future distribution or incentive parameters are structured around sustainable liquidity and long-term alignment rather than short-term emissions. Final supply and allocation schedules will accompany the full technical whitepaper.</p>
+  <h2>3. Tokenomics &amp; Value Mechanics</h2>
+  <p>
+    Tokenomics, fee mechanics, and any future distribution or incentive parameters are structured around sustainable liquidity and long-term alignment rather than short-term emissions. Final supply and allocation schedules will accompany the full technical whitepaper.
+  </p>
 
   <h2>4. Roadmap</h2>
   <ul>
-    <li><strong>Phase 1:</strong> Core smart contract deployment, <a href="https://omnilit-finance.xyz/">omnilit-finance.xyz</a> launch, and end-to-end flow validation.</li>
-    <li><strong>Phase 2:</strong> Launchpad/listing reviews (including <a href="https://beta.auralaunch.org/"></a>), analytics visibility, and UX refinements based on feedback.</li>
+    <li><strong>Phase 1:</strong> Core smart contract deployment, <a href="https://omnilit-finance.xyz/" target="_blank">omnilit-finance.xyz</a> launch, and end-to-end flow validation.</li>
+    <li><strong>Phase 2:</strong> Launchpad/listing reviews, analytics visibility, and UX refinements based on feedback.</li>
     <li><strong>Phase 3:</strong> Full whitepaper, expanded security checks, and incremental feature rollouts.</li>
   </ul>
 
-  <h2>5. Risks & Disclaimers</h2>
-  <p>Early-stage smart contracts and decentralized interfaces carry technical and network risks. Nothing in this document is financial, investment, or legal advice; always verify contract details independently.</p>
+  <h2>5. Risks &amp; Disclaimers</h2>
+  <p>
+    Early-stage smart contracts and decentralized interfaces carry technical and network risks. Nothing in this document is financial, investment, or legal advice; always verify contract details independently.
+  </p>
+
 </body>
 </html>
-
-
