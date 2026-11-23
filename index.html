@@ -87,6 +87,8 @@ button:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.1)}
 .module[data-mod=pool]{--k1:#4ade80;--k2:#22d3ee}
 .module[data-mod=stake]{--k1:#facc15;--k2:#4ade80}
 .module[data-mod=borrow]{--k1:#e879f9;--k2:#fb7185}
+.module[data-mod=gov]{--k1:#818cf8;--k2:#22d3ee}
+.module[data-mod=zklink]{--k1:#22d3ee;--k2:#facc15}
 .ico{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:22px;margin-bottom:12px;background:linear-gradient(135deg,var(--k1),var(--k2));box-shadow:0 8px 24px rgba(0,0,0,.35)}
 .card h2{margin:0 0 6px;font-size:21px;font-weight:700}
 .card p{margin:0 0 16px;color:var(--muted);font-size:12px;line-height:1.5}
@@ -94,7 +96,8 @@ button:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.1)}
 .box:focus-within{border-color:var(--c1);box-shadow:0 0 0 3px rgba(34,211,238,.2)}
 .box-top{display:flex;justify-content:space-between;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px}
 .box-row{display:flex;justify-content:space-between;align-items:center;gap:10px}
-input[type=number],input[type=text]{width:100%;background:transparent;border:none;color:#fff;font-size:19px;font-weight:800;outline:none}
+input[type=number],input[type=text],select{width:100%;background:transparent;border:none;color:#fff;font-size:16px;font-weight:800;outline:none}
+select option{background:#0b0a2e;color:#fff}
 .pill-tok{background:rgba(255,255,255,.1);border:1px solid var(--line);padding:6px 11px;border-radius:11px;font-size:12px;font-weight:800;white-space:nowrap}
 .arrow{width:38px;height:38px;margin:-20px auto -4px;position:relative;z-index:2;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#22d3ee,#e879f9);box-shadow:0 0 24px rgba(232,121,249,.6);animation:float 3s ease-in-out infinite;font-weight:900;color:#06061f}
 .recv{font-size:19px;font-weight:800;color:#86efac}
@@ -127,15 +130,15 @@ input[type=number],input[type=text]{width:100%;background:transparent;border:non
       <div>
         <span class="badge mono">LITVM LITEFORGE · CHAIN 4441</span>
         <h1>OMNILIT FINANCE</h1>
-        <p class="sub">Unified DeFi Hub: Instant Swap, Liquidity Pools, Yield Staking & Collateral Loans</p>
+        <p class="sub">Unified DeFi Hub: Instant Swap, Liquidity Pools, Yield Staking, Governance & zkLink Relay</p>
       </div>
     </div>
     <button type="button" class="btn-connect" id="connectBtn">Connect Wallet</button>
   </div>
 
   <div class="ticker mono"><div>
-    <span>⚡ INSTANT SWAP <em>0.3% FEE</em></span><span>🌊 LIQUIDITY POOL</span><span>🌱 YIELD VAULT <b>18.5% APY</b></span><span>🪙 BORROW oUSD <em>65% LTV</em></span><span>🔗 LITVM TESTNET</span>
-    <span>⚡ INSTANT SWAP <em>0.3% FEE</em></span><span>🌊 LIQUIDITY POOL</span><span>🌱 YIELD VAULT <b>18.5% APY</b></span><span>🪙 BORROW oUSD <em>65% LTV</em></span><span>🔗 LITVM TESTNET</span>
+    <span>⚡ INSTANT SWAP <em>0.3% FEE</em></span><span>🌊 LIQUIDITY POOL</span><span>🌱 YIELD VAULT <b>18.5% APY</b></span><span>🪙 BORROW oUSD <em>65% LTV</em></span><span>🗳️ ON-CHAIN VOTE</span><span>🌉 zkLINK RELAY</span>
+    <span>⚡ INSTANT SWAP <em>0.3% FEE</em></span><span>🌊 LIQUIDITY POOL</span><span>🌱 YIELD VAULT <b>18.5% APY</b></span><span>🪙 BORROW oUSD <em>65% LTV</em></span><span>🗳️ ON-CHAIN VOTE</span><span>🌉 zkLINK RELAY</span>
   </div></div>
 
   <div class="stats">
@@ -167,6 +170,8 @@ input[type=number],input[type=text]{width:100%;background:transparent;border:non
     <button type="button" class="btn-secondary tab-btn" data-tab="pool">Liquidity</button>
     <button type="button" class="btn-secondary tab-btn" data-tab="stake">Yield Vault</button>
     <button type="button" class="btn-secondary tab-btn" data-tab="borrow">Borrow</button>
+    <button type="button" class="btn-secondary tab-btn" data-tab="gov">Governance</button>
+    <button type="button" class="btn-secondary tab-btn" data-tab="zklink">zkLink Relay</button>
   </div>
 
   <div class="grid">
@@ -241,6 +246,58 @@ input[type=number],input[type=text]{width:100%;background:transparent;border:non
         <button type="button" class="btn-secondary" id="repayBtn" style="flex:1;">Repay oUSD</button>
       </div>
     </div>
+
+    <div class="card module" data-mod="gov">
+      <div class="ico">🗳️</div>
+      <h2>Governance Vote</h2>
+      <p>Vote on-chain on protocol proposals or submit a new proposal.</p>
+      <div class="box">
+        <div class="box-top"><span>Active Proposal</span><span class="mono" id="propCountLabel">ID #0</span></div>
+        <div class="box-row">
+          <select id="proposalSelect" class="mono"></select>
+        </div>
+      </div>
+      <div class="meta-list mono" id="proposalStats">YES: 0 · NO: 0</div>
+      <div class="row-actions">
+        <button type="button" class="btn-yield" id="voteYesBtn" style="flex:1;">Vote YES</button>
+        <button type="button" class="btn-secondary" id="voteNoBtn" style="flex:1;">Vote NO</button>
+      </div>
+      <div class="box" style="margin-top:12px;margin-bottom:0">
+        <div class="box-top"><span>New Proposal Title</span><span class="mono">On-Chain</span></div>
+        <div class="box-row">
+          <input type="text" id="newPropTitle" class="mono" placeholder="e.g. Set APY to 20%" />
+          <button type="button" class="btn-primary" id="createPropBtn">Create</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card module" data-mod="zklink">
+      <div class="ico">🌉</div>
+      <h2>zkLink Cross-Chain Relay</h2>
+      <p>Submit an on-chain zkLink route deposit & reference hash on LitVM 4441.</p>
+      <div class="box">
+        <div class="box-top"><span>Source Route</span><span class="mono">→ LitVM 4441</span></div>
+        <div class="box-row">
+          <select id="zkRouteSelect" class="mono">
+            <option value="zkLink Nova">zkLink Nova</option>
+            <option value="zkLink X">zkLink X</option>
+            <option value="Ethereum Sepolia">Ethereum Sepolia</option>
+            <option value="Arbitrum">Arbitrum</option>
+          </select>
+        </div>
+      </div>
+      <div class="box">
+        <div class="box-top"><span>Relay Amount</span><span class="mono">zkLTC</span></div>
+        <div class="box-row">
+          <input type="number" id="zkAmt" class="mono" value="0.01" min="0.0001" step="0.01" />
+          <span class="pill-tok mono">zkLTC</span>
+        </div>
+      </div>
+      <div class="meta-list mono">Total Relayed: <span id="totalBridged">0.0000 zkLTC</span></div>
+      <div class="row-actions">
+        <button type="button" class="btn-primary" id="zkRelayBtn" style="width:100%;">Execute zkLink Relay</button>
+      </div>
+    </div>
   </div>
 
   <div class="card" style="margin-bottom:18px;--k1:#818cf8;--k2:#22d3ee;">
@@ -288,7 +345,7 @@ input[type=number],input[type=text]{width:100%;background:transparent;border:non
   });
 })();
 
-/* ===== APP LOGIC (unchanged) ===== */
+/* ===== APP LOGIC ===== */
 const RPC_URL = "https://rpc.testnet.liteforge.zeeve.net/";
 const EXPLORER = "https://explorer.testnet.liteforge.zeeve.net";
 const CHAIN_HEX = "0x1159";
@@ -308,16 +365,24 @@ const ABI = [
   "function claimYield()",
   "function borrowUsd(uint256 aUsdAmount)",
   "function repayUsd(uint256 aUsdAmount)",
+  "function createProposal(string title, uint256 durationSeconds) returns (uint256)",
+  "function vote(uint256 proposalId, bool support)",
+  "function proposalCount() view returns (uint256)",
+  "function getProposal(uint256 proposalId) view returns (uint256 id, string title, uint256 yesVotes, uint256 noVotes, uint256 deadline, address proposer)",
+  "function relayFromZkLink(string sourceChain, bytes32 txRef) payable",
+  "function totalBridgedZkLink() view returns (uint256)",
   "function getVaultState(address user) view returns (uint256 aUsdBalance, uint256 lpShares, uint256 stakedZkl, uint256 liveYield, uint256 borrowedUsd, uint256 maxBorrowUsd, uint256 aiSignalsLogged)",
   "function totalPoolZkl() view returns (uint256)"
 ];
 
-let contractAddr = localStorage.getItem("omnilit_contract") || "";
+const DEFAULT_CONTRACT = "";
+let contractAddr = localStorage.getItem("omnilit_contract") || (DEFAULT_CONTRACT.startsWith("0x") ? DEFAULT_CONTRACT : "");
 const contractInput = document.getElementById("contractInput");
 contractInput.value = contractAddr;
 
 const providerRead = new ethers.JsonRpcProvider(RPC_URL);
 let userAddr = null;
+let loadedProposals = [];
 
 function setStatus(msg) { document.getElementById("statusBar").innerHTML = msg; }
 
@@ -348,12 +413,48 @@ document.getElementById("saveContractBtn").addEventListener("click", () => {
   refreshState();
 });
 
+function renderSelectedProposal() {
+  const sel = document.getElementById("proposalSelect");
+  const idx = Number(sel.value || 0);
+  const p = loadedProposals[idx];
+  if (!p) {
+    document.getElementById("propCountLabel").innerText = "ID #0";
+    document.getElementById("proposalStats").innerText = "YES: 0 · NO: 0";
+    return;
+  }
+  document.getElementById("propCountLabel").innerText = `ID #${p.id}`;
+  const yesFmt = Number(ethers.formatEther(p.yesVotes)).toFixed(2);
+  const noFmt = Number(ethers.formatEther(p.noVotes)).toFixed(2);
+  document.getElementById("proposalStats").innerText = `YES: ${yesFmt} · NO: ${noFmt}`;
+}
+
+document.getElementById("proposalSelect").addEventListener("change", renderSelectedProposal);
+
 async function refreshState() {
   try {
     if (ethers.isAddress(contractAddr)) {
       const cRead = new ethers.Contract(contractAddr, ABI, providerRead);
-      const pool = await cRead.totalPoolZkl();
+      const [pool, bridged, count] = await Promise.all([
+        cRead.totalPoolZkl(),
+        cRead.totalBridgedZkLink(),
+        cRead.proposalCount()
+      ]);
       document.getElementById("poolTvl").innerText = `${Number(ethers.formatEther(pool)).toFixed(4)} zkLTC`;
+      document.getElementById("totalBridged").innerText = `${Number(ethers.formatEther(bridged)).toFixed(4)} zkLTC`;
+
+      const totalProps = Number(count);
+      const items = [];
+      for (let i = 0; i < Math.min(totalProps, 25); i++) {
+        const pr = await cRead.getProposal(i);
+        items.push({ id: Number(pr[0]), title: pr[1], yesVotes: pr[2], noVotes: pr[3] });
+      }
+      loadedProposals = items;
+      const sel = document.getElementById("proposalSelect");
+      const prevVal = sel.value;
+      sel.innerHTML = items.map(x => `<option value="${x.id}">#${x.id} — ${x.title}</option>`).join("");
+      if (prevVal && items.some(x => String(x.id) === String(prevVal))) sel.value = prevVal;
+      renderSelectedProposal();
+
       if (userAddr) {
         const st = await cRead.getVaultState(userAddr);
         document.getElementById("balUsd").innerText = Number(ethers.formatEther(st[0])).toFixed(3);
@@ -440,6 +541,25 @@ document.getElementById("borrowBtn").addEventListener("click", () => {
 document.getElementById("repayBtn").addEventListener("click", () => {
   const a = String(Math.max(0.01, Number(document.getElementById("borrowAmt").value) || 0.5));
   runTx("Repay oUSD", c => c.repayUsd(ethers.parseEther(a)));
+});
+document.getElementById("voteYesBtn").addEventListener("click", () => {
+  const pid = Number(document.getElementById("proposalSelect").value || 0);
+  runTx(`Vote YES #${pid}`, c => c.vote(pid, true));
+});
+document.getElementById("voteNoBtn").addEventListener("click", () => {
+  const pid = Number(document.getElementById("proposalSelect").value || 0);
+  runTx(`Vote NO #${pid}`, c => c.vote(pid, false));
+});
+document.getElementById("createPropBtn").addEventListener("click", () => {
+  const title = document.getElementById("newPropTitle").value.trim();
+  if (!title) { setStatus("Enter a proposal title first."); return; }
+  runTx("Create Proposal", c => c.createProposal(title, 7 * 24 * 3600));
+});
+document.getElementById("zkRelayBtn").addEventListener("click", () => {
+  const route = document.getElementById("zkRouteSelect").value;
+  const amt = String(Math.max(0.0001, Number(document.getElementById("zkAmt").value) || 0.01));
+  const ref = ethers.keccak256(ethers.toUtf8Bytes(`${route}-${Date.now()}-${amt}`));
+  runTx(`zkLink Relay (${route})`, c => c.relayFromZkLink(route, ref, { value: ethers.parseEther(amt) }));
 });
 
 refreshState();
