@@ -267,6 +267,30 @@ select option{background:#090d1c;color:#fff}
     </div>
   </div>
 
+  <div class="card" style="margin-bottom:18px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+      <div>
+        <h2 style="margin-bottom:4px;">Protocol Litepaper</h2>
+        <p style="margin-bottom:0;">OmniLitFinanceV2 on LitVM LiteForge Testnet (Chain ID 4441) — Swap, Liquidity, Yield Vault, Borrow, Governance & zkLink Relay.</p>
+      </div>
+      <button type="button" class="btn-secondary" id="toggleLitepaperBtn">Show Litepaper</button>
+    </div>
+    <div id="litepaperBody" class="hidden" style="margin-top:16px;border-top:1px solid var(--line);padding-top:14px;font-size:12px;line-height:1.65;color:#cbd5e1;">
+      <p><strong>Why We Built This:</strong> Most DeFi apps force you to jump between five different pages just to swap, stake, add liquidity, and borrow. OmniLit Finance puts core actions—plus on-chain governance voting and zkLink cross-chain relay tracking—into a single protocol on LitVM LiteForge (Chain ID 4441) inside one unified <code>UserVault</code> per wallet.</p>
+      <p><strong>How the Protocol Works:</strong> Users interact with native <code>zkLTC</code> and protocol-accounted <code>aUSD</code> (fixed at <code>1 zkLTC = 85 aUSD</code>), automatically syncing accrued yield on state updates:</p>
+      <ul class="meta-list" style="margin:8px 0 14px;padding-left:18px;">
+        <li><strong>1. Instant Swap (0.3% Fee):</strong> <code>swapZklForUsd()</code> converts native <code>zkLTC</code> to <code>aUSD</code> with a flat 0.3% fee (99.7% net at 1 zkLTC = 85 aUSD).</li>
+        <li><strong>2. Liquidity Pool:</strong> <code>addLiquidity()</code> and <code>removeLiquidity(uint256 lpAmount)</code> supply and withdraw <code>zkLTC</code> liquidity via <code>lpShares</code>.</li>
+        <li><strong>3. Yield Staking Vault (18.5% APY):</strong> <code>stakeZkl()</code> and <code>claimYield()</code> accrue yield continuously at 18.5% APY and claim it into <code>aUSD</code>.</li>
+        <li><strong>4. Collateral Borrowing (65% Max LTV):</strong> <code>borrowUsd(uint256 aUsdAmount)</code> and <code>repayUsd(uint256 aUsdAmount)</code> borrow up to 65% LTV against staked <code>zkLTC</code>.</li>
+        <li><strong>5. Governance Vote:</strong> <code>createProposal(...)</code> and <code>vote(uint256 proposalId, bool support)</code> create proposals and cast on-chain YES/NO votes.</li>
+        <li><strong>6. zkLink Cross-Chain Relay:</strong> <code>relayFromZkLink(string sourceChain, bytes32 txRef)</code> records cross-chain relay deposits from zkLink Nova, zkLink X, Ethereum Sepolia, and Arbitrum.</li>
+        <li><strong>7. Single-Call Vault Snapshot:</strong> <code>getVaultState(address user)</code> returns full vault balances, yield, borrow limits, and proposal count in one RPC call.</li>
+      </ul>
+      <p style="margin-bottom:8px;"><strong>Key Numbers:</strong> Rate: <code>1 zkLTC = 85 aUSD</code> · Swap Fee: <code>0.3%</code> · Staking APY: <code>18.5%</code> · Max LTV: <code>65%</code> · Chain ID: <code>4441</code> · RPC: <code>https://rpc.testnet.liteforge.zeeve.net/</code> · Explorer: <code>https://explorer.testnet.liteforge.zeeve.net</code></p>
+      <p style="margin-bottom:0;"><strong>Things to Keep in Mind:</strong> LitVM LiteForge Testnet (4441) build; <code>aUSD</code> is an internal ledger balance inside <code>UserVault</code> (not a separate ERC-20); 85 aUSD/zkLTC rate is hardcoded for deterministic testnet behavior; staked <code>zkLTC</code> acts as yield/borrow collateral base while LP shares can be withdrawn via <code>removeLiquidity</code>.</p>
+    </div>
+  </div>
   <div class="log-bar mono" id="statusBar">OmniLit Finance initialized for LitVM LiteForge (Chain ID 4441). Connect wallet to interact.</div>
 </div>
 
@@ -335,7 +359,13 @@ document.getElementById("saveContractBtn").addEventListener("click", () => {
   contractAddr = val;
   localStorage.setItem("omnilit_contract", contractAddr);
   setStatus(`Saved OmniLit contract: ${contractAddr}`);
-  refreshState();
+  document.getElementById("toggleLitepaperBtn").addEventListener("click", () => {
+  const body = document.getElementById("litepaperBody");
+  const btn = document.getElementById("toggleLitepaperBtn");
+  const isHidden = body.classList.toggle("hidden");
+  btn.innerText = isHidden ? "Show Litepaper" : "Hide Litepaper";
+});
+refreshState();
 });
 
 function renderSelectedProposal() {
@@ -417,7 +447,13 @@ async function ensureSigner() {
   const cBtn = document.getElementById("connectBtn");
   cBtn.innerText = `${userAddr.slice(0, 6)}...${userAddr.slice(-4)}`;
   cBtn.classList.add("ok");
-  await refreshState();
+  await document.getElementById("toggleLitepaperBtn").addEventListener("click", () => {
+  const body = document.getElementById("litepaperBody");
+  const btn = document.getElementById("toggleLitepaperBtn");
+  const isHidden = body.classList.toggle("hidden");
+  btn.innerText = isHidden ? "Show Litepaper" : "Hide Litepaper";
+});
+refreshState();
   return signer;
 }
 
@@ -430,7 +466,13 @@ async function runTx(actionName, fn) {
     const tx = await fn(contract);
     setStatus(`Pending ${actionName}... <a href="${EXPLORER}/tx/${tx.hash}" target="_blank">View Tx ↗</a>`);
     await tx.wait();
-    await refreshState();
+    await document.getElementById("toggleLitepaperBtn").addEventListener("click", () => {
+  const body = document.getElementById("litepaperBody");
+  const btn = document.getElementById("toggleLitepaperBtn");
+  const isHidden = body.classList.toggle("hidden");
+  btn.innerText = isHidden ? "Show Litepaper" : "Hide Litepaper";
+});
+refreshState();
     setStatus(`✅ ${actionName} confirmed! <a href="${EXPLORER}/tx/${tx.hash}" target="_blank">Explorer ↗</a>`);
   } catch (e) { setStatus(`${actionName} error: ` + (e.shortMessage || e.message)); }
 }
@@ -487,6 +529,12 @@ document.getElementById("zkRelayBtn").addEventListener("click", () => {
   runTx(`zkLink Relay (${route})`, c => c.relayFromZkLink(route, ref, { value: ethers.parseEther(amt) }));
 });
 
+document.getElementById("toggleLitepaperBtn").addEventListener("click", () => {
+  const body = document.getElementById("litepaperBody");
+  const btn = document.getElementById("toggleLitepaperBtn");
+  const isHidden = body.classList.toggle("hidden");
+  btn.innerText = isHidden ? "Show Litepaper" : "Hide Litepaper";
+});
 refreshState();
 setInterval(refreshState, 10000);
 </script>
