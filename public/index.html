@@ -89,7 +89,6 @@ button:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.1)}
 .module[data-mod=borrow]{--k1:#e879f9;--k2:#fb7185}
 .module[data-mod=gov]{--k1:#818cf8;--k2:#22d3ee}
 .module[data-mod=zklink]{--k1:#22d3ee;--k2:#facc15}
-.ico{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:22px;margin-bottom:12px;background:linear-gradient(135deg,var(--k1),var(--k2));box-shadow:0 8px 24px rgba(0,0,0,.35)}
 .card h2{margin:0 0 6px;font-size:21px;font-weight:700}
 .card p{margin:0 0 16px;color:var(--muted);font-size:12px;line-height:1.5}
 .box{background:rgba(8,6,36,.6);border:1px solid var(--line);border-radius:16px;padding:13px 15px;margin-bottom:12px;transition:border-color .2s,box-shadow .2s}
@@ -130,15 +129,15 @@ select option{background:#0b0a2e;color:#fff}
       <div>
         <span class="badge mono">LITVM LITEFORGE · CHAIN 4441</span>
         <h1>OMNILIT FINANCE</h1>
-        <p class="sub">Unified DeFi Hub: Instant Swap, Liquidity Pools, Yield Staking, Governance & zkLink Relay</p>
+        <p class="sub">Unified DeFi Hub: Instant Swap, Liquidity Pools, Yield Staking & Collateral Loans</p>
       </div>
     </div>
     <button type="button" class="btn-connect" id="connectBtn">Connect Wallet</button>
   </div>
 
   <div class="ticker mono"><div>
-    <span>⚡ INSTANT SWAP <em>0.3% FEE</em></span><span>🌊 LIQUIDITY POOL</span><span>🌱 YIELD VAULT <b>18.5% APY</b></span><span>🪙 BORROW oUSD <em>65% LTV</em></span><span>🗳️ ON-CHAIN VOTE</span><span>🌉 zkLINK RELAY</span>
-    <span>⚡ INSTANT SWAP <em>0.3% FEE</em></span><span>🌊 LIQUIDITY POOL</span><span>🌱 YIELD VAULT <b>18.5% APY</b></span><span>🪙 BORROW oUSD <em>65% LTV</em></span><span>🗳️ ON-CHAIN VOTE</span><span>🌉 zkLINK RELAY</span>
+    <span>⚡ INSTANT SWAP <em>0.3% FEE</em></span><span>🌊 LIQUIDITY POOL</span><span>🌱 YIELD VAULT <b>18.5% APY</b></span><span>🪙 BORROW oUSD <em>65% LTV</em></span><span>🔗 LITVM TESTNET</span>
+    <span>⚡ INSTANT SWAP <em>0.3% FEE</em></span><span>🌊 LIQUIDITY POOL</span><span>🌱 YIELD VAULT <b>18.5% APY</b></span><span>🪙 BORROW oUSD <em>65% LTV</em></span><span>🔗 LITVM TESTNET</span>
   </div></div>
 
   <div class="stats">
@@ -176,7 +175,6 @@ select option{background:#0b0a2e;color:#fff}
 
   <div class="grid">
     <div class="card module" data-mod="swap">
-      <div class="ico">⚡</div>
       <h2>Instant Swap</h2>
       <p>Convert zkLTC to oUSD with low slippage and transparent pricing.</p>
       <div class="box">
@@ -197,7 +195,6 @@ select option{background:#0b0a2e;color:#fff}
     </div>
 
     <div class="card module" data-mod="pool">
-      <div class="ico">🌊</div>
       <h2>Liquidity Pool</h2>
       <p>Provide or withdraw zkLTC liquidity to earn pool fee share.</p>
       <div class="box">
@@ -214,7 +211,6 @@ select option{background:#0b0a2e;color:#fff}
     </div>
 
     <div class="card module" data-mod="stake">
-      <div class="ico">🌱</div>
       <h2>Yield Staking Vault</h2>
       <p>Stake zkLTC for continuous yield accrual and collateral power.</p>
       <div class="box">
@@ -231,7 +227,6 @@ select option{background:#0b0a2e;color:#fff}
     </div>
 
     <div class="card module" data-mod="borrow">
-      <div class="ico">🪙</div>
       <h2>Collateral Borrow & Repay</h2>
       <p>Mint oUSD loans against staked zkLTC collateral (up to 65% LTV).</p>
       <div class="box">
@@ -248,7 +243,6 @@ select option{background:#0b0a2e;color:#fff}
     </div>
 
     <div class="card module" data-mod="gov">
-      <div class="ico">🗳️</div>
       <h2>Governance Vote</h2>
       <p>Vote on-chain on protocol proposals or submit a new proposal.</p>
       <div class="box">
@@ -272,7 +266,6 @@ select option{background:#0b0a2e;color:#fff}
     </div>
 
     <div class="card module" data-mod="zklink">
-      <div class="ico">🌉</div>
       <h2>zkLink Cross-Chain Relay</h2>
       <p>Submit an on-chain zkLink route deposit & reference hash on LitVM 4441.</p>
       <div class="box">
@@ -375,8 +368,9 @@ const ABI = [
   "function totalPoolZkl() view returns (uint256)"
 ];
 
-const DEFAULT_CONTRACT = "";
-let contractAddr = localStorage.getItem("omnilit_contract") || (DEFAULT_CONTRACT.startsWith("0x") ? DEFAULT_CONTRACT : "");
+const DEFAULT_CONTRACT = "0x0D977b70A7c8DeDabeE26f84384D65228084Dfd4";
+let contractAddr = (DEFAULT_CONTRACT.startsWith("0x") ? DEFAULT_CONTRACT : "");
+localStorage.setItem("omnilit_contract", contractAddr);
 const contractInput = document.getElementById("contractInput");
 contractInput.value = contractAddr;
 
